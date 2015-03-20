@@ -37,16 +37,52 @@ class PongGame(Widget):
     ball = ObjectProperty(None)
     player1 = ObjectProperty(None)
     player2 = ObjectProperty(None)
+    player1Dir = 0
+    player2Dir = 0
 
     def __init__(self, **kwargs):
         super(PongGame, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        self._keyboard.bind(on_key_up=self._on_keyboard_up)
+
+    def _on_keyboard_up(self, keyboard, keycode):
+        if keycode[0] == 273:
+            self.player1Dir = 0
+        elif keycode[0] == 274:
+            self.player1Dir = 0;
+
+        if keycode[0] == 114:
+            self.player2Dir = 0
+        elif keycode[0] == 102:
+            self.player2Dir = 0;
+
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        print('The key', keycode, 'have been pressed')
-        print(' - text is %r' % text)
-        print(' - modifiers are %r' % modifiers)
+        # 273 up
+        # 274 down
+        # 275 right
+        # 276 left
+        # 308 ALT
+        # 306 CTRL
+
+        # 114 r
+        # 102 f
+        # 103 g
+        # 100 d
+        #  97 a
+        # 115 s
+
+        if keycode[0] == 273:
+            self.player1Dir = 1
+        elif keycode[0] == 274:
+            self.player1Dir = -1;
+
+        if keycode[0] == 114:
+            self.player2Dir = 1
+        elif keycode[0] == 102:
+            self.player2Dir = -1
+
 
         # Keycode is composed of an integer + a string
         # If we hit escape, release the keyboard
@@ -72,6 +108,12 @@ class PongGame(Widget):
         self.player1.bounce_ball(self.ball)
         self.player2.bounce_ball(self.ball)
 
+        player1Offset = self.player1Dir * 5
+        self.player1.center_y += player1Offset
+
+        player2Offset = self.player2Dir * 5
+        self.player2.center_y += player2Offset
+
         #bounce ball off bottom or top
         if (self.ball.y < self.y) or (self.ball.top > self.top):
             self.ball.velocity_y *= -1
@@ -86,6 +128,7 @@ class PongGame(Widget):
 
     def on_touch_move(self, touch):
         if touch.x < self.width / 3:
+            print touch.y
             self.player1.center_y = touch.y
         if touch.x > self.width - self.width / 3:
             self.player2.center_y = touch.y
