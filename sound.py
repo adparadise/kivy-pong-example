@@ -34,7 +34,7 @@ class SoundGame(Widget):
 
         data = io.BytesIO(open("plums.tiff", "rb").read())
         im = CoreImage(data, ext="png")
-        self.rect = Rectangle(texture=im.texture, pos=(40, 25), size=(500, 100))
+        self.rect = Rectangle(texture=im.texture, pos=(40, 25), size=(100, 100))
 
         self.canvas.add(self.color)
         self.canvas.add(self.rect)
@@ -65,6 +65,16 @@ class SoundGame(Widget):
         cos = math.cos(self.index * math.pi / 360)
         sin = math.sin(self.index * math.pi / 360)
         self.rect.pos = (cos * 100 + 90, sin * 100 + 75)
+        size = 32
+        width = 800.0
+        height = 608.0
+        x = 11
+        y = 2
+        u = x * size / width
+        v = y * size / height
+        w = size / width
+        h = size / height
+        self.rect.tex_coords = [u, v + h, u + w, v + h, u + w, v, u, v]
 
         if isChanged:
             if self.isPlaying:
